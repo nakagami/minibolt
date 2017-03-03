@@ -14,7 +14,7 @@ setup(
     version=__import__('minibolt').__version__,
     url='https://github.com/nakagami/minibolt/',
     classifiers=classifiers,
-    keywords=['MongoDB'],
+    keywords=['Neo4j'],
     author='Hajime Nakagami',
     author_email='nakagami@gmail.com',
     description='Simple Neo4j driver',
