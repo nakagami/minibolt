@@ -76,11 +76,18 @@ class TestNeo4jBolt(unittest.TestCase):
             self.assertEqual(e.data['message'], 'The client is unauthorized due to authentication failure.')
         conn = minibolt.connect(self.host, self.user, self.password)
         self.assertEqual(conn.run('RETURN 1 AS num'), [[1]])
-#        for r in conn.run('MATCH (people:Person) RETURN people LIMIT 10'):
-#            print(r)
-#        for rs in  conn.run('MATCH (tom:Person {name: "Tom Hanks"})-[:ACTED_IN]->(tomHanksMovies) RETURN tom,tomHanksMovies'):
-#            for r in rs:
-#                print(r)
+
+    def test_movie_graph(self):
+        # :play movie-graph
+        # and Create
+        conn = minibolt.connect(self.host, self.user, self.password)
+        rs = conn.run('''
+            MATCH (tom:Person {name: "Tom Hanks"})-[:ACTED_IN]->(tomHanksMovies)
+            WHERE tomHanksMovies.released=1995
+            RETURN tomHanksMovies''')
+        self.assertEqual(len(rs), 1)
+        self.assertEqual(rs[0][0].labels, ['Movie'])
+        self.assertEqual(rs[0][0].title, 'Apollo 13')
 
         conn.close()
 

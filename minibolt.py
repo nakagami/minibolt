@@ -185,6 +185,9 @@ class Node(Struct):
         self.properties = args[2]
         super().__init__(0x4E)
 
+    def __getattr__(self, name):
+        return self.properties[name]
+
     def __str__(self):
         return "Node(%d:%s:%s" % (self.nodeIdentity, self.labels, self.properties)
 
