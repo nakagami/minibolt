@@ -28,7 +28,7 @@ except ImportError:
     import usocket as socket
     import ustruct as struct
 
-__version__ = '0.1.0'
+__version__ = '0.2.0'
 
 
 def int_to_bytes(n, ln):
