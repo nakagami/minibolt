@@ -21,7 +21,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ###############################################################################
-import sys
 try:
     import socket
     import struct
@@ -30,6 +29,7 @@ except ImportError:
     import ustruct as struct
 
 __version__ = '0.1.0'
+
 
 def int_to_bytes(n, ln):
     if n < 0:
@@ -190,6 +190,7 @@ class Node(Struct):
 
     def __str__(self):
         return "Node(%d:%s:%s" % (self.nodeIdentity, self.labels, self.properties)
+
 
 class Relationship(Struct):
     def __init__(self, relIdentity, startNodeIdentity, endNodeIdentity, typeName, properties):
@@ -405,7 +406,6 @@ class BoltSession:
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._sock.connect((self.host, self.port))
 
-
         # Initial handshake
         self._send(bytes([
             0x60, 0x60, 0xb0, 0x17,
@@ -418,14 +418,13 @@ class BoltSession:
 
         m = InitMessage(
             "PyBolt/" + __version__,
-            { "scheme": "basic", "principal": self.user, "credentials": self.password},
+            {"scheme": "basic", "principal": self.user, "credentials": self.password},
         )
         self.send_message(m.encode())
         r, _ = decode_message(self.read_message())
         if isinstance(r, FailureMessage):
             raise r
         self.server_version = r.data['server']
-
 
     def run(self, query, params={}):
         m = RunMessage(query, params)

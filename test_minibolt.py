@@ -22,7 +22,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ###############################################################################
-import sys
 import unittest
 import binascii
 import minibolt
@@ -60,20 +59,25 @@ class TestNeo4jBolt(unittest.TestCase):
 
         m = minibolt.InitMessage("MyClient/1.0", authToken)
         hs = binascii.b2a_hex(m.encode()).decode('utf-8').upper()
-        self.assertEqual(hs, 'B1018C4D79436C69656E742F312E30A386736368656D65856261736963897072696E636970616C856E656F346A8B63726564656E7469616C7386736563726574')
-
+        self.assertEqual(
+            hs,
+            'B1018C4D79436C69656E742F312E30A386736368656D65856261736963897072'
+            '696E636970616C856E656F346A8B63726564656E7469616C7386736563726574'
+        )
 
         m = minibolt.RunMessage("RETURN 1 AS num", {})
         hs = binascii.b2a_hex(m.encode()).decode('utf-8').upper()
         self.assertEqual(hs, 'B2108F52455455524E2031204153206E756DA0')
-
 
     def test_connect(self):
         try:
             conn = minibolt.connect(self.host, self.user, 'Evil Password')
         except minibolt.FailureMessage as e:
             self.assertEqual(e.data['code'], 'Neo.ClientError.Security.Unauthorized')
-            self.assertEqual(e.data['message'], 'The client is unauthorized due to authentication failure.')
+            self.assertEqual(
+                e.data['message'],
+                'The client is unauthorized due to authentication failure.'
+            )
         conn = minibolt.connect(self.host, self.user, self.password)
         self.assertEqual(conn.run('RETURN 1 AS num'), [[1]])
 
@@ -90,6 +94,7 @@ class TestNeo4jBolt(unittest.TestCase):
         self.assertEqual(rs[0][0].title, 'Apollo 13')
 
         conn.close()
+
 
 if __name__ == "__main__":
     unittest.main()
