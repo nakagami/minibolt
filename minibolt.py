@@ -402,8 +402,9 @@ class BoltSession:
         self.user = user
         self.password = password
         self.port = port
-        self._sock = socket.socket()
-        self._sock.connect(socket.getaddrinfo(self.host, self.port)[0][-1])
+        self._sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self._sock.connect((self.host, self.port))
+
 
         # Initial handshake
         self._send(bytes([
