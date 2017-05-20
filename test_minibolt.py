@@ -86,12 +86,15 @@ class TestNeo4jBolt(unittest.TestCase):
         # and Create
         conn = minibolt.connect(self.host, self.user, self.password)
         rs = conn.run('''
-            MATCH (tom:Person {name: "Tom Hanks"})-[:ACTED_IN]->(tomHanksMovies)
+            MATCH (tom:Person {name: "Tom Hanks"})-[r:ACTED_IN]->(tomHanksMovies)
             WHERE tomHanksMovies.released=1995
-            RETURN tomHanksMovies''')
+            RETURN tomHanksMovies,r''')
         self.assertEqual(len(rs), 1)
+        self.assertTrue(isinstance(rs[0][0], minibolt.Node))
         self.assertEqual(rs[0][0].labels, ['Movie'])
         self.assertEqual(rs[0][0].title, 'Apollo 13')
+        self.assertTrue(isinstance(rs[0][1], minibolt.Relationship))
+        self.assertEqual(rs[0][1].roles, ['Jim Lovell'])
 
         conn.close()
 

@@ -193,13 +193,25 @@ class Node(Struct):
 
 
 class Relationship(Struct):
-    def __init__(self, relIdentity, startNodeIdentity, endNodeIdentity, typeName, properties):
-        self.relIdentity = relIdentity
-        self.startNodeIdentity = startNodeIdentity
-        self.endNodeIdentity = endNodeIdentity
-        self.typeName = typeName
-        self.properties = properties
+    def __init__(self, args):
+        self.relIdentity = args[0]
+        self.startNodeIdentity = args[1]
+        self.endNodeIdentity = args[2]
+        self.typeName = args[3]
+        self.properties = args[4]
         super().__init__(0x52)
+
+    def __getattr__(self, name):
+        return self.properties[name]
+
+    def __str__(self):
+        return "Relationship(%d:%s:%d->%d:%s" % (
+            self.relIdentity,
+            self.typeName,
+            self.startNodeIdentity,
+            self.endNodeIdentity,
+            self.properties
+        )
 
 
 class Path(Struct):
