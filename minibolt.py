@@ -426,8 +426,6 @@ class BoltSession:
             raise r
         self.server_version = r.data['server']
 
-    def cursor(self):
-        return BoltCursor(self)
 
     def run(self, query, params={}):
         m = RunMessage(query, params)
@@ -457,4 +455,3 @@ class BoltSession:
 
 def connect(host, user, password, port=7687):
     return BoltSession(host, user, password, port)
-
