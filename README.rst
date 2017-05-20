@@ -15,7 +15,7 @@ Sample Code
 ::
 
    >>> import minibolt
-   >>> conn = minibolt.connect('localhost', 'neo4j', 'secret')
+   >>> conn = minibolt.connect('servername', 'username', 'password')
    >>> for r in conn.run('MATCH (tom:Person {name: "Tom Hanks"})-[:ACTED_IN]->(movie) return movie.title'):
    ...     print(r[0])
    ...
