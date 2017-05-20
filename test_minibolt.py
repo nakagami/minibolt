@@ -96,6 +96,13 @@ class TestNeo4jBolt(unittest.TestCase):
         self.assertTrue(isinstance(rs[0][1], minibolt.Relationship))
         self.assertEqual(rs[0][1].roles, ['Jim Lovell'])
 
+        rs = conn.run('''
+            MATCH p=shortestPath(
+              (bacon:Person {name:"Kevin Bacon"})-[*]-(meg:Person {name:"Meg Ryan"})
+            )
+            RETURN p''')
+        self.assertTrue(isinstance(rs[0][0], minibolt.Path))
+
         conn.close()
 
 

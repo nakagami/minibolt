@@ -205,29 +205,46 @@ class Relationship(Struct):
         return self.properties[name]
 
     def __str__(self):
-        return "Relationship(%d:%s:%d->%d:%s" % (
+        return "Relationship(%d,%d->%d:%s:%s" % (
             self.relIdentity,
-            self.typeName,
             self.startNodeIdentity,
             self.endNodeIdentity,
+            self.typeName,
             self.properties
         )
 
 
 class Path(Struct):
-    def __init__(self, nodes, relationships, sequence):
-        self.nodes = nodes
-        self.relationships = relationships
-        self.sequence = sequence
+    def __init__(self, args):
+        self.nodes = args[0]
+        self.relationships = args[1]
+        self.sequence = args[2]
         super().__init__(0x50)
+
+    def __str__(self):
+        return "Path(%s:%s:%s" % (
+            ','.join([str(n) for n in self.nodes]),
+            ','.join([str(r) for r in self.relationships]),
+            self.sequence
+        )
 
 
 class UnboundRelationship(Struct):
-    def __init__(self, relIdentity, typeName, properties):
-        self.relIdentity = relIdentity
-        self.typeName = typeName
-        self.properties = properties
+    def __init__(self, args):
+        self.relIdentity = args[0]
+        self.typeName = args[1]
+        self.properties = args[2]
         super().__init__(0x72)
+
+    def __getattr__(self, name):
+        return self.properties[name]
+
+    def __str__(self):
+        return "UnboundRelationship(%d:%s:%s" % (
+            self.relIdentity,
+            self.typeName,
+            self.properties,
+        )
 
 
 # -----------------------------------------------------------------------------
