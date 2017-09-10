@@ -16,7 +16,10 @@ Sample Code
 
    >>> import minibolt
    >>> conn = minibolt.connect('servername', 'username', 'password')
-   >>> for r in conn.run('MATCH (tom:Person {name: "Tom Hanks"})-[:ACTED_IN]->(movie) return movie.title'):
+   >>> rs = conn.run('MATCH (tom:Person {name: "Tom Hanks"})-[:ACTED_IN]->(movie) return movie.title')
+   >>> conn.fields
+   ['movie.title']
+   >>> for r in rs:
    ...     print(r[0])
    ...
    Charlie Wilson's War
