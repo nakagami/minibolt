@@ -80,6 +80,7 @@ class TestNeo4jBolt(unittest.TestCase):
             )
         conn = minibolt.connect(self.host, self.user, self.password)
         self.assertEqual(conn.run('RETURN 1 AS num'), [[1]])
+        self.assertEqual(conn.fields, ['num'])
 
     def test_movie_graph(self):
         # :play movie-graph
@@ -89,6 +90,7 @@ class TestNeo4jBolt(unittest.TestCase):
             MATCH (tom:Person {name: "Tom Hanks"})-[r:ACTED_IN]->(tomHanksMovies)
             WHERE tomHanksMovies.released=1995
             RETURN tomHanksMovies,r''')
+        self.assertEqual(conn.fields, ['tomHanksMovies', 'r'])
         self.assertEqual(len(rs), 1)
         self.assertTrue(isinstance(rs[0][0], minibolt.Node))
         self.assertEqual(rs[0][0].labels, ['Movie'])
@@ -101,6 +103,7 @@ class TestNeo4jBolt(unittest.TestCase):
               (bacon:Person {name:"Kevin Bacon"})-[*]-(meg:Person {name:"Meg Ryan"})
             )
             RETURN p''')
+        self.assertEqual(conn.fields, ['p'])
         self.assertTrue(isinstance(rs[0][0], minibolt.Path))
 
         conn.close()
