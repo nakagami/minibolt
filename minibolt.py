@@ -392,7 +392,7 @@ def decode_message(message):
     elif marker <= 0xEF:    # Reserverd
         raise ValueError('bad marker')
     else:                   # -TINY_INT
-        return -(marker & 0b1111), message
+        return (16 -(marker & 0b1111)) * -1, message
 
 
 class BoltSession:
