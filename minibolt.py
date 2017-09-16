@@ -29,6 +29,7 @@ except ImportError:
     import ustruct as struct
 
 __version__ = '0.2.1'
+__all__ = ('connect', 'to_nxgraph', 'nodes', 'relationships')
 
 
 def int_to_bytes(n, ln):
@@ -481,22 +482,38 @@ class BoltSession:
             self._sock = None
 
 
+def nodes(rs):
+    "Filter nodes from resultsets"
+    results = []
+    for r in rs:
+        for e in r:
+            if isinstance(e, Node):
+                results.append(e)
+    return results
+
+
+def relationships(rs):
+    "Filter relationships from resultsets"
+    results = []
+    for r in rs:
+        for e in r:
+            if isinstance(e, Relationship):
+                results.append(e)
+    return results
+
+
 def to_nxgraph(rs):
     "Convert resultsets to NetworkX graph"
     import networkx as nx
     G = nx.MultiDiGraph()
-    for r in rs:
-        for e in r:
-            if isinstance(e, Node):
-                d = {'labels': e.labels}
-                d.update(e.properties)
-                G.add_node(e.nodeIdentity, **d)
-    for r in rs:
-        for e in r:
-            if isinstance(e, Relationship):
-                d = {'typeName': e.typeName}
-                d.update(e.properties)
-                G.add_edge(e.startNodeIdentity, e.endNodeIdentity, **d)
+    for e in nodes(rs):
+        d = {'labels': e.labels}
+        d.update(e.properties)
+        G.add_node(e.nodeIdentity, **d)
+    for e in relationships(rs):
+        d = {'typeName': e.typeName}
+        d.update(e.properties)
+        G.add_edge(e.startNodeIdentity, e.endNodeIdentity, **d)
     return G
 
 
