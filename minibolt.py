@@ -481,5 +481,24 @@ class BoltSession:
             self._sock = None
 
 
+def to_nxgraph(rs):
+    "Convert resultsets to NetworkX graph"
+    import networkx as nx
+    G = nx.MultiDiGraph()
+    for r in rs:
+        for e in r:
+            if isinstance(e, Node):
+                d = {'labels': e.labels}
+                d.update(e.properties)
+                G.add_node(e.nodeIdentity, **d)
+    for r in rs:
+        for e in r:
+            if isinstance(e, Relationship):
+                d = {'typeName': e.typeName}
+                d.update(e.properties)
+                G.add_edge(e.startNodeIdentity, e.endNodeIdentity, **d)
+    return G
+
+
 def connect(host, user, password, port=7687):
     return BoltSession(host, user, password, port)
