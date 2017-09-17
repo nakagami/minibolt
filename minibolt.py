@@ -187,7 +187,10 @@ class Node(Struct):
         super().__init__(0x4E)
 
     def __getattr__(self, name):
-        return self.properties[name]
+        if name in self.properties:
+            return self.properties[name]
+        else:
+            raise AttributeError
 
     def __str__(self):
         return "Node(%d:%s:%s" % (self.nodeIdentity, self.labels, self.properties)
