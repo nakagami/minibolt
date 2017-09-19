@@ -233,8 +233,11 @@ class Path(Struct):
         node_seq = [0] + self.sequence[0::2]
         rel_seq = sequence[1::2]
         for i in range(len(rel_seq)):
-            # TODO: create Relationship list
-            pass
+            unbound_relationship = self.unbound_relationships[abs(rel_seq[i])]
+            p, n = self.nodes[i], self.nodes[i + 1]
+            if rel_seq[i] < 0:
+                p, n = n, p
+            r.append(unbound_relationship.bind(p.nodeIdentity, n.nodeIdentity))
         return rs
 
     def __str__(self):
@@ -527,6 +530,16 @@ def relationships(rs):
     return results
 
 
+def paths(rs):
+    "Filter paths from resultsets"
+    results = []
+    for r in rs:
+        for e in r:
+            if isinstance(e, Path):
+                results.append(e)
+    return results
+
+
 def to_nxgraph(rs):
     "Convert resultsets to NetworkX graph"
     import networkx as nx
@@ -539,6 +552,10 @@ def to_nxgraph(rs):
         d = {'typeName': e.typeName}
         d.update(e.properties)
         G.add_edge(e.startNodeIdentity, e.endNodeIdentity, **d)
+    for e in paths(rs):
+        # TODO: add nodes and edges from path
+        pass
+
     return G
 
 
