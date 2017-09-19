@@ -229,10 +229,13 @@ class Path(Struct):
         return self.nodes
 
     def relationships(self):
-        node_seq = self.sequence[0::2]
-        rel_seq = self.sequence[1::2]
-        # TODO: create Relationship list
-        pass
+        rs = []
+        node_seq = [0] + self.sequence[0::2]
+        rel_seq = sequence[1::2]
+        for i in range(len(rel_seq)):
+            # TODO: create Relationship list
+            pass
+        return rs
 
     def __str__(self):
         return "Path(%s:%s:%s" % (
