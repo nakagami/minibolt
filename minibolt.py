@@ -252,7 +252,7 @@ class UnboundRelationship(Struct):
         self.properties = args[2]
         super().__init__(0x72)
 
-    def bound(self, startNodeIdentity, endNodeIdentity):
+    def bind(self, startNodeIdentity, endNodeIdentity):
         "create Relationship instance"
         return Relationship(
             self.relIdentity,
