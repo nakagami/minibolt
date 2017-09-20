@@ -220,31 +220,31 @@ class Relationship(Struct):
 
 class Path(Struct):
     def __init__(self, args):
-        self.nodes = args[0]
-        self.unbound_relationships = args[1]
-        self.sequence = args[2]
+        self._nodes = args[0]
+        self._unbound_relationships = args[1]
+        self._sequence = args[2]
         super().__init__(0x50)
 
     def nodes(self):
-        return self.nodes
+        return self._nodes
 
     def relationships(self):
         rs = []
-        node_seq = [0] + self.sequence[0::2]
-        rel_seq = sequence[1::2]
+        node_seq = [0] + self._sequence[0::2]
+        rel_seq = self._sequence[1::2]
         for i in range(len(rel_seq)):
-            unbound_relationship = self.unbound_relationships[abs(rel_seq[i]) -1]
-            p, n = self.nodes[i], self.nodes[i + 1]
+            unbound_relationship = self._unbound_relationships[abs(rel_seq[i]) -1]
+            p, n = self._nodes[i], self._nodes[i + 1]
             if rel_seq[i] < 0:
                 p, n = n, p
-            r.append(unbound_relationship.bind(p.nodeIdentity, n.nodeIdentity))
+            rs.append(unbound_relationship.bind(p.nodeIdentity, n.nodeIdentity))
         return rs
 
     def __str__(self):
         return "Path(%s:%s:%s" % (
-            ','.join([str(n) for n in self.nodes]),
-            ','.join([str(r) for r in self.unbound_relationships]),
-            self.sequence
+            ','.join([str(n) for n in self._nodes]),
+            ','.join([str(r) for r in self._unbound_relationships]),
+            self._sequence
         )
 
 
@@ -257,13 +257,13 @@ class UnboundRelationship(Struct):
 
     def bind(self, startNodeIdentity, endNodeIdentity):
         "create Relationship instance"
-        return Relationship(
+        return Relationship([
             self.relIdentity,
-            satrtNodeIdentity,
+            startNodeIdentity,
             endNodeIdentity,
             self.typeName,
             self.properties
-        )
+        ])
 
     def __getattr__(self, name):
         return self.properties[name]
