@@ -230,8 +230,8 @@ class Path(Struct):
 
     def relationships(self):
         rs = []
-        node_seq = [0] + self._sequence[0::2]
-        rel_seq = self._sequence[1::2]
+        rel_seq = self._sequence[0::2]
+        node_seq = [0] + self._sequence[1::2]
         for i in range(len(rel_seq)):
             unbound_relationship = self._unbound_relationships[abs(rel_seq[i]) -1]
             p, n = self._nodes[i], self._nodes[i + 1]
