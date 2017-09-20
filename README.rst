@@ -9,6 +9,14 @@ Requirement
 
 CPython 3.5+ https://www.python.org or MicroPython https://micropython.org
 
+Install
+------------
+
+::
+
+   # pip install minibolt
+
+
 Sample Code
 ------------
 
@@ -37,7 +45,6 @@ Sample Code
    >>>
 
 NetworkX integration
------------------------
 
 See https://gist.github.com/nakagami/0cc142db992b6121fd123fa596cf6e90
 
