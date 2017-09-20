@@ -548,13 +548,21 @@ def to_nxgraph(rs):
         d = {'labels': e.labels}
         d.update(e.properties)
         G.add_node(e.nodeIdentity, **d)
+
     for e in relationships(rs):
         d = {'typeName': e.typeName}
         d.update(e.properties)
         G.add_edge(e.startNodeIdentity, e.endNodeIdentity, **d)
-    for e in paths(rs):
-        # TODO: add nodes and edges from path
-        pass
+
+    for p in paths(rs):
+        for e in p.nodes():
+            d = {'labels': e.labels}
+            d.update(e.properties)
+            G.add_node(e.nodeIdentity, **d)
+        for e in p.relationships():
+            d = {'typeName': e.typeName}
+            d.update(e.properties)
+            G.add_edge(e.startNodeIdentity, e.endNodeIdentity, **d)
 
     return G
 
