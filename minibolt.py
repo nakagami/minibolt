@@ -424,6 +424,43 @@ def decode_message(message):
         return (16 -(marker & 0b1111)) * -1, message
 
 
+class RunResult:
+    def __init__(self, fields, rs):
+        self.fields = fields
+        self._rs = rs
+
+    def __iter__(self):
+        for r in self._rs:
+            yield r
+
+    def nodes(self):
+        "Filter nodes from resultsets"
+        results = []
+        for r in self._rs:
+            for e in r:
+                if isinstance(e, Node):
+                    results.append(e)
+        return results
+
+    def relationships(self):
+        "Filter relationships from resultsets"
+        results = []
+        for r in self._rs:
+            for e in r:
+                if isinstance(e, Relationship):
+                    results.append(e)
+        return results
+
+    def paths(self):
+        "Filter paths from resultsets"
+        results = []
+        for r in self._rs:
+            for e in r:
+                if isinstance(e, Path):
+                    results.append(e)
+        return results
+
+
 class BoltSession:
     # http://boltprotocol.org/v1/
     def _send(self, b):
@@ -490,7 +527,7 @@ class BoltSession:
         r, _ = decode_message(self.read_message())
         if isinstance(r, FailureMessage):
             raise r
-        self.fields = r.data.get('fields', [])
+        fields = r.data.get('fields', [])
 
         results = []
         m = PullAllMessage()
@@ -502,7 +539,7 @@ class BoltSession:
             if isinstance(r, SuccessMessage):
                 break
             results.append(r.data)
-        return results
+        return RunResult(fields, results)
 
     def close(self):
         if self._sock:
@@ -510,51 +547,21 @@ class BoltSession:
             self._sock = None
 
 
-def nodes(rs):
-    "Filter nodes from resultsets"
-    results = []
-    for r in rs:
-        for e in r:
-            if isinstance(e, Node):
-                results.append(e)
-    return results
-
-
-def relationships(rs):
-    "Filter relationships from resultsets"
-    results = []
-    for r in rs:
-        for e in r:
-            if isinstance(e, Relationship):
-                results.append(e)
-    return results
-
-
-def paths(rs):
-    "Filter paths from resultsets"
-    results = []
-    for r in rs:
-        for e in r:
-            if isinstance(e, Path):
-                results.append(e)
-    return results
-
-
 def to_nxgraph(rs):
     "Convert resultsets to NetworkX graph"
     import networkx as nx
     G = nx.MultiDiGraph()
-    for e in nodes(rs):
+    for e in rs.nodes():
         d = {'labels': e.labels}
         d.update(e.properties)
         G.add_node(e.nodeIdentity, **d)
 
-    for e in relationships(rs):
+    for e in rs.relationships():
         d = {'typeName': e.typeName}
         d.update(e.properties)
         G.add_edge(e.startNodeIdentity, e.endNodeIdentity, **d)
 
-    for p in paths(rs):
+    for p in rs.paths():
         for e in p.nodes():
             d = {'labels': e.labels}
             d.update(e.properties)
