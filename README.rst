@@ -46,5 +46,5 @@ Sample Code
 
 NetworkX integration
 
-See https://gist.github.com/nakagami/0cc142db992b6121fd123fa596cf6e90
+See https://gist.github.com/nakagami/a9c050ae76dc5a40eaeb67e6326b774e
 
